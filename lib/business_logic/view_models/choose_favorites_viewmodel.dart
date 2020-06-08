@@ -37,6 +37,10 @@ import 'package:moolax/services/service_locator.dart';
 // 1
 import 'package:flutter/foundation.dart';
 
+import '../../services/currency/currency_service.dart';
+import '../models/currency.dart';
+import '../utils/iso_data.dart';
+
 // 2
 class ChooseFavoritesViewModel extends ChangeNotifier {
 
@@ -51,17 +55,62 @@ class ChooseFavoritesViewModel extends ChangeNotifier {
 
   void loadData() async {
     // ...
-
-    // 5
+    final rates = await _currencyService.getAllExchangeRates();
+    _favorites = await _currencyService.getFavoriteCurrencies();
+    _prepareChoicePresentation(rates);
     notifyListeners();
+  }
+
+  void _prepareChoicePresentation(List<Rate> rates){
+    List<FavoritePresentation> list = [];
+    for (Rate rate in rates){
+      String code = rate.quoteCurrency;
+      bool isFavorite = _getFavoriteStatus(code);
+      list.add(FavoritePresentation(
+        flag: IsoData.flagOf(code),
+        alphabeticCode: code,
+        longName: IsoData.longNameOf(code),
+        isFavorite: isFavorite
+      ));
+    }
+  }
+
+  bool _getFavoriteStatus(String code){
+    for (Currency currency in _favorites){
+      if (code == currency.isoCode){
+        return true;
+      }
+      return false;
+    }
   }
 
   void toggleFavoriteStatus(int choiceIndex) {
-    // ...
-
-    // 5
+    final isFavorite = !_choices[choiceIndex].isFavorite;
+    final code = _choices[choiceIndex].alphabeticCode;
+    _choices[choiceIndex].isFavorite = isFavorite;
+    if (isFavorite){
+      _addToFavorite(code);
+    }else{
+      _removeFromFavorite(code);
+    }
     notifyListeners();
   }
+
+  void _addToFavorite(String alphabeticCode){
+    _favorites.add(Currency(alphabeticCode));
+    _currencyService.saveFavoriteCurrencies(_favorites);
+  }
+
+  void _removeFromFavorite(String alphabeticCode){
+    for (final currency in _favorites){
+      if (currency.isoCode == alphabeticCode){
+        _favorites.remove(currency);
+        break;
+      }
+    }
+    _currencyService.saveFavoriteCurrencies(_favorites);
+  }
+
 }
 
 class FavoritePresentation {
