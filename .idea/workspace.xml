@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="84958db1-2eb3-43c2-a781-bb99ffe82d53" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/views/choose_favorites.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/views/choose_favorites.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
